@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Auth } from './auth.entity';
 import { AuthDto } from 'src/dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
+const md5 = require('md5');
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
     }
 
     signIn(body: AuthDto): Promise<Auth> {
-        return this.authRepository.findOneBy({ Email: body.Email, Password: body.Password });
+        return this.authRepository.findOneBy({ Email: body.Email, Password: md5(body.Password) });
     }
 
     async remove(Email: string): Promise<void> {
@@ -30,7 +31,7 @@ export class AuthService {
     }
 
     async userLogin(loginObj: AuthDto) {
-        loginObj['Password'] = 'hahahaabc123';
+        loginObj['Password'] = md5(loginObj.Password);
         const login = this.authRepository.create(loginObj);
         return this.authRepository.save(login);
     }

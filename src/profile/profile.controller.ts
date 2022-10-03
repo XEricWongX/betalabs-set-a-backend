@@ -8,22 +8,15 @@ export class ProfileController {
 
     @Get()
     async getProfile(@Query('email') email: string) {
-        const profile = this.profileService.findOne(email)
-        console.log(`profile: find by email ${email} `, profile)
-        return { code: 200, status: 'profile found', profile: profile }
+        const res: ProfileDto = await this.profileService.findOne(email)
+        console.log(`profile: find by email ${email} `, res)
+        return { code: 200, status: 'profile found', res: res }
     }
 
     @Post()
     async postProfile(@Body() body: ProfileDto) {
-        const res = await this.profileService.updateProfile(body);
         console.log('profile: body is ', body);
-        return { code: 200, status: 'Update success' };
-        if (res) {
-            console.log('profile updated: user ID ', body.UserID);
-            return { code: 200, status: 'profile updated', res }
-        } else {
-            console.log('profile update fail: user ID ', body.UserID);
-            return { code: 400, status: 'profile update fail' }
-        }
+        const res = await this.profileService.updateProfile(body);
+        return { code: 200, status: 'Update success', profile: res };
     }
 }

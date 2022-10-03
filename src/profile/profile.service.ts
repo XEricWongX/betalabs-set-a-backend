@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AuthService } from 'src/auth/auth.service';
 import { ProfileDto } from 'src/dto/profile.dto';
 import { Repository } from 'typeorm';
 import { Profile } from './profile.entity';
@@ -9,14 +10,15 @@ export class ProfileService {
     constructor(
         @InjectRepository(Profile)
         private profileRepository: Repository<Profile>,
+        private authService: AuthService,
     ) { }
 
     findAll(): Promise<Profile[]> {
         return this.profileRepository.find();
     }
 
-    findOne(Email: string): Promise<Profile> {
-        return this.profileRepository.findOneBy({ Email });
+    async findOne(Email: string): Promise<Profile> {
+        return await this.profileRepository.findOneBy({ Email: Email });
     }
 
     async remove(Email: string): Promise<void> {
@@ -34,6 +36,8 @@ export class ProfileService {
             return this.profileRepository.save(profile);
         } else {
             console.log('profile cant found');
+            const auth = await this.authService.authFindByEmail(profileObj.Email)
+            profileObj.UserID = auth.UserID;
             const createProfile = this.profileRepository.create(profileObj);
             return this.profileRepository.save(createProfile);
         }

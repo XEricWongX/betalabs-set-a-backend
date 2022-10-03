@@ -9,11 +9,6 @@ export class AuthController {
         private authService: AuthService
     ) { }
 
-    @Get()
-    haha() {
-        return { on9: 'on9' };
-    }
-
     @Get(':email')
     async getLogin(@Param('email') email: string) {
         console.log('Email is: ', email);
@@ -50,7 +45,7 @@ export class AuthController {
 
     @Post('sign-in')
     async postAuth(@Body() auth: AuthDto, @Query('info') info: string) {
-        console.log('sing-in body: ', auth)
+        console.log('sing-in body: ', auth);
         const signIn = await this.authService.signIn(auth);
         if (signIn) {
             console.log((info) ? 'info: ' : 'Sign in: success ', signIn.Email);
@@ -60,10 +55,5 @@ export class AuthController {
             console.log('Sign in: fail ', signIn);
             return { code: 404, status: 'sign in fail' }
         }
-    }
-
-    @Post()
-    async postResgi() {
-        return true;
     }
 }
