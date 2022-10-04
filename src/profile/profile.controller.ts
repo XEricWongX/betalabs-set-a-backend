@@ -17,6 +17,6 @@ export class ProfileController {
     async postProfile(@Body() body: ProfileDto) {
         console.log('profile: body is ', body);
         const res = await this.profileService.updateProfile(body);
-        return { code: 200, status: 'Update success', profile: res };
+        return { code: 200, status: 'Update success', res: res };
     }
 }
